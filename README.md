@@ -9,7 +9,7 @@ A native homebrew port of ZUN's 2003 bullet hell danmaku classic **Touhou 7: Per
 
 Built on the [some100/th07](https://github.com/some100/th07) decompilation (`reallyportable` branch), this port runs the game through SDL3 on an OpenGL ES 3 context over Nouveau/Mesa, talks to the console's audio hardware directly via libnx AUDOUT, and paces itself to a locked 60 FPS on Horizon — no Linux, Box64 or Wine involved.
 
-Companion to the [Touhou 6 Switch port](https://github.com/Swiizyu/th06-switch), with matching controls.
+Companion to the [Touhou 6 Switch port](https://github.com/saekaze/th06-switch), with matching controls.
 
 ---
 
