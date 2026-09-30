@@ -13,6 +13,14 @@ Companion to the [Touhou 6 Switch port](https://github.com/saekaze/th06-switch),
 
 ---
 
+## 🆕 What's New (September 2026 update)
+
+* 📁 **One folder for all Touhou ports:** the game can now live in `sd:/switch/touhou/touhou7/` (recommended), next to the other ports. The NRO's own folder is always checked first, so your current setup keeps working.
+* 🏷️ **The NRO is now `touhou7.nro`**, matching the other ports (`touhou6.nro`, `touhou8.nro` …). Delete the old `th07.nro` when updating so hbmenu doesn't list the game twice.
+* Nothing in the game itself changed.
+
+---
+
 ## ✨ Key Features
 
 * 🚀 **Locked 60 FPS:** Horizon's EGL implementation does not block on swap, so the renderer would otherwise free-run at ~120 FPS while the logic ticked at 60. The port paces presentation against an absolute deadline, giving stable frames and noticeably less battery drain.
@@ -20,7 +28,7 @@ Companion to the [Touhou 6 Switch port](https://github.com/saekaze/th06-switch),
 * 🔊 **Direct AUDOUT Audio:** Rather than layering the miniaudio engine on top of SDL's audio backend, the port drives libnx AUDOUT itself with four page-aligned buffers cycled in strict release order at the hardware's native 48 kHz — no resampling anywhere in the path. BGM is preloaded into RAM so SD card reads never stall playback.
 * 🎮 **Fixed, Sane Controls:** Joy-Con (handheld, grip, detached) and Pro Controller via SDL3's gamepad API.
 * 🌏 **Language-Aware Title:** hbmenu shows the original Japanese title on consoles set to 日本語 and the romanised one everywhere else, filled across all 16 NACP language slots.
-* 📁 **Flexible Data Location:** The game data can sit in `sd:/switch/th07/`, `sd:/th07/`, `sd:/touhou7/`, `sd:/games/th07/` and more — folder names are matched case-insensitively against real directory entries, so FAT32 capitalisation quirks do not matter.
+* 📁 **Flexible Data Location:** The game data can sit in `sd:/switch/touhou/touhou7/` (recommended), `sd:/switch/th07/`, `sd:/th07/`, `sd:/touhou7/`, `sd:/games/th07/` and more — folder names are matched case-insensitively against real directory entries, so FAT32 capitalisation quirks do not matter.
 * 💾 **Saves Next to the Data:** `th07.cfg`, `score.dat`, replays and snapshots are written into the same SD folder the game loaded from.
 
 ---
@@ -32,18 +40,18 @@ Companion to the [Touhou 6 Switch port](https://github.com/saekaze/th06-switch),
 ### 1. SD Card File Structure
 
 1. Ensure your Nintendo Switch is running custom firmware (Atmosphère CFW).
-2. Download the latest `touhou07.nro` from the [Releases](../../releases) tab (or build from source).
-3. Create a folder named `sd:/switch/th07/` and copy the following into it:
+2. Download the latest `touhou7.nro` from the [Releases](../../releases) tab (or build from source). Older releases were called `th07.nro` / `touhou07.nro`; delete the old file when updating so hbmenu doesn't list the game twice.
+3. Create the folder `sd:/switch/touhou/touhou7/` and copy the following into it:
 
 ```text
-sd:/switch/th07/
-    ├── touhou07.nro          # Nintendo Switch homebrew executable
+sd:/switch/touhou/touhou7/
+    ├── touhou7.nro           # Nintendo Switch homebrew executable
     ├── th07.dat          # Main game archive
     ├── thbgm.dat         # Background music archive
     └── msgothic.ttc      # Japanese font (ships with the Windows release)
 ```
 
-The loader also accepts `sd:/th07/`, `sd:/touhou7/`, `sd:/touhou 7/`, `sd:/switch/touhou7/`, `sd:/games/th07/`, `sd:/roms/th07/` and `pcb` / `perfect cherry blossom` variants, in any capitalisation — or simply the folder the NRO was launched from.
+**Recommended place: `sd:/switch/touhou/touhou7/`.** Keeping every Touhou port in one `sd:/switch/touhou/` folder (`touhou6`, `touhou7`, `touhou8` …) is much tidier than a separate folder per game. Other places still work: the port first looks in its own folder (wherever the NRO is), then for a `th07` / `touhou7` (or `touhou 7`, `pcb`, `perfect cherry blossom`) folder (any capitalisation) directly on the SD card, in `switch/`, `touhou/`, `switch/touhou/`, `games/` or `roms/` — so older layouts keep working.
 
 ### 2. Music
 
@@ -51,7 +59,7 @@ Unlike Touhou 6, no extra soundtrack download is needed: PCB ships its BGM insid
 
 ### 3. Launching
 
-Run `touhou07.nro` from the **Homebrew Menu (hbmenu)**, **Sphaira launcher**, or a home screen forwarder.
+Run `touhou7.nro` from the **Homebrew Menu (hbmenu)**, **Sphaira launcher**, or a home screen forwarder.
 
 ---
 
@@ -77,7 +85,7 @@ ZUN's "shot slow" auto-focus (holding shot also engages focus) defaults to **off
 
 ### Automated Build (GitHub Actions)
 
-This repository includes a CI pipeline (`.github/workflows/build-switch.yml`). Push or fork the repository and the workflow compiles `th07.nro` inside the official `devkitpro/devkita64` container, uploading it as a downloadable artifact.
+This repository includes a CI pipeline (`.github/workflows/build-switch.yml`). Push or fork the repository and the workflow compiles `touhou7.nro` inside the official `devkitpro/devkita64` container, uploading it as a downloadable artifact.
 
 ### Local Build (Linux / macOS / WSL)
 
@@ -97,7 +105,7 @@ This repository includes a CI pipeline (`.github/workflows/build-switch.yml`). P
    ./scripts/build_switch.sh game     # rebuild the game only
    ```
 
-   The result is `touhou07.nro` in the repository root.
+   The result is `touhou7.nro` in the repository root.
 
 The script cross-compiles an SDL3 stack into `ext/prefix` first, because devkitPro only ships SDL2 for Switch and the official SDL3 Switch port is NDA-gated:
 
@@ -108,7 +116,7 @@ Debugging on hardware:
 
 ```bash
 TH_SWITCH_NXLINK=1 ./scripts/build_switch.sh game
-nxlink -s th07.nro
+nxlink -s touhou7.nro
 ```
 
 ---

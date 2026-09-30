@@ -42,7 +42,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
 {
 #ifdef __SWITCH__
     // romfs + SD data folder must be resolved before the first file is touched.
-    PlatformSwitch::Init();
+    PlatformSwitch::Init(argc, argv);
 #endif
 
     if (g_Supervisor.LoadConfig("th07.cfg") != ZUN_SUCCESS)

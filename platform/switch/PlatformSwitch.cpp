@@ -56,8 +56,10 @@ bool DirExists(const std::string &dir)
 // Both the SD root and sdmc:/switch/ are searched, so all of these work:
 //   sd:/th07/  sd:/TH07/  sd:/touhou7/  sd:/Touhou7/  sd:/switch/th07/
 //   sd:/switch/touhou7/  sd:/switch/Touhou7/ ...
+// and so does a shared Touhou folder: sd:/touhou/th07/,
+// sd:/switch/touhou/touhou7/ ...
 const char *const kFolderNames[] = {
-    "th07", "touhou7", "touhou 7", "th07-switch", "touhou7-switch",
+    "th07", "touhou7", "touhou07", "touhou 7", "th07-switch", "touhou7-switch",
     "pcb",  "perfect cherry blossom",
 };
 
@@ -65,6 +67,8 @@ const char *const kFolderNames[] = {
 const char *const kRoots[] = {
     "sdmc:/switch/",
     "sdmc:/",
+    "sdmc:/touhou/",
+    "sdmc:/switch/touhou/",
     "sdmc:/games/",
     "sdmc:/roms/",
 };
@@ -127,7 +131,7 @@ std::vector<std::string> MatchingFoldersIn(const char *root)
 namespace PlatformSwitch
 {
 
-void Init()
+void Init(int argc, char **argv)
 {
     // romfs is optional: we only bundle a fallback font/README inside the NRO.
     if (R_SUCCEEDED(romfsInit()))
@@ -144,6 +148,17 @@ void Init()
     }
 #endif
 
+    // 0. the folder the NRO itself is in (hbmenu passes its path as argv[0])
+    if (argc > 0 && argv && argv[0])
+    {
+        std::string nro = argv[0];
+        const size_t slash = nro.find_last_of('/');
+        if (slash != std::string::npos && FileExistsAt(nro.substr(0, slash + 1), "th07.dat"))
+        {
+            g_DataPath = nro.substr(0, slash + 1);
+        }
+    }
+
     // 1. a recognised folder that actually contains the game data
     std::vector<std::string> candidates;
     for (const char *root : kRoots)
@@ -156,6 +171,10 @@ void Init()
 
     for (const std::string &cand : candidates)
     {
+        if (!g_DataPath.empty())
+        {
+            break;
+        }
         if (FileExistsAt(cand, "th07.dat"))
         {
             g_DataPath = cand;

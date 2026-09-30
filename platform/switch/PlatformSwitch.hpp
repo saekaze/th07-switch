@@ -9,7 +9,7 @@ namespace PlatformSwitch
 {
 // Mount romfs, optionally attach nxlink stdio, locate + chdir into the folder
 // that holds the user's th07.dat / thbgm.dat / msgothic.ttc.
-void Init();
+void Init(int argc, char **argv);
 
 // Tear down libnx subsystems brought up by Init().
 void Exit();

@@ -16,7 +16,7 @@
 # It builds, into ext/prefix, a Switch-targeted SDL3 stack:
 #   SDL3 (with the libnx video/audio/joystick backend + our GLES3 context fix),
 #   SDL3_image (stb JPEG only), SDL3_ttf (portlibs freetype),
-# and then links th07 against it and wraps it into th07.nro.
+# and then links th07 against it and wraps it into touhou7.nro.
 #
 # No game assets are downloaded or bundled. Bring your own th07.dat /
 # thbgm.dat / msgothic.ttc from your legally owned copy of PCB 1.00b.
@@ -98,14 +98,14 @@ build_deps() {
 }
 
 build_game() {
-    log "building th07.nro"
+    log "building touhou7.nro"
     cmake -S "$ROOT" -B "$ROOT/build-switch" -G Ninja \
         -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_PREFIX_PATH="$PREFIX" ${TH_SWITCH_NXLINK:+-DTH_SWITCH_NXLINK=ON}
     cmake --build "$ROOT/build-switch" -j"$JOBS"
-    cp "$ROOT/build-switch/th07.nro" "$ROOT/th07.nro"
-    log "done -> $ROOT/th07.nro"
-    ls -lh "$ROOT/th07.nro"
+    cp "$ROOT/build-switch/touhou7.nro" "$ROOT/touhou7.nro"
+    log "done -> $ROOT/touhou7.nro"
+    ls -lh "$ROOT/touhou7.nro"
 }
 
 if [ "${1:-all}" != "game" ]; then

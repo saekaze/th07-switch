@@ -252,13 +252,13 @@ elseif(NINTENDO_SWITCH)
     )
     if(EXISTS "${CMAKE_SOURCE_DIR}/platform/switch/icon.jpg")
         nx_create_nro(${TH_EXEC_NAME}
-            OUTPUT ${CMAKE_BINARY_DIR}/th07.nro
+            OUTPUT ${CMAKE_BINARY_DIR}/touhou7.nro
             NACP ${CMAKE_BINARY_DIR}/th07.nacp
             ICON "${CMAKE_SOURCE_DIR}/platform/switch/icon.jpg"
         )
     else()
         nx_create_nro(${TH_EXEC_NAME}
-            OUTPUT ${CMAKE_BINARY_DIR}/th07.nro
+            OUTPUT ${CMAKE_BINARY_DIR}/touhou7.nro
             NACP ${CMAKE_BINARY_DIR}/th07.nacp
         )
     endif()
