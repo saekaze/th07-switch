@@ -976,10 +976,12 @@ u32 MainMenu::OnUpdateKeyConfig()
             case 10:
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
                 g_SoundPlayer.ProcessQueues();
-                this->controlMapping = g_ControllerMapping;
 #ifdef __SWITCH__
+                // The Switch layout, not whatever was loaded from th07.cfg.
+                this->controlMapping = g_SwitchDefaultMapping;
                 g_Supervisor.cfg.shotSlow = 0;
 #else
+                this->controlMapping = g_ControllerMapping;
                 g_Supervisor.cfg.shotSlow = 1;
 #endif
                 break;

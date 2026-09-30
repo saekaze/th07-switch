@@ -35,7 +35,8 @@
 //   focus  = 4: L / ZL                   pause = 7: +
 //   skip   = 5: R / ZR
 // Controller.cpp reads th07.cfg's mapping, so Key Config can change it.
-ControllerMapping g_ControllerMapping = {1, 0, 4, 7, -1, -1, -1, -1, 5};
+const ControllerMapping g_SwitchDefaultMapping = {1, 0, 4, 7, -1, -1, -1, -1, 5};
+ControllerMapping g_ControllerMapping = g_SwitchDefaultMapping;
 #else
 ControllerMapping g_ControllerMapping = {0, 1, 2, 4, -1, -1, -1, -1, 3};
 #endif
@@ -952,13 +953,22 @@ ZunResult Supervisor::LoadConfig(const char *configFilename)
     {
         g_Supervisor.cfg.unused_27[0] = kSwitchCfgMarker;
 
-        // Switch button layout instead of the PC defaults.
-        g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
+        // (The button layout has its own one-time reset below.)
 
         // "shot slow" (auto-focus while holding shot) is on by default in
         // th07 and feels like the ship randomly slowing down. Default it off;
         // the player can switch it back on in Option and it will be honoured.
         g_Supervisor.cfg.shotSlow = 0;
+    }
+    // One-time controls reset. Builds before the remappable controls ignored
+    // th07.cfg's pad mapping, so whatever it holds (often the PC layout, where
+    // 0 = SDL south = the Switch A button shoots) was never used. Start from
+    // the Switch layout once; Key Config owns it from then on.
+    constexpr u8 kSwitchControlsMarker = 0x43; // 'C'
+    if (g_Supervisor.cfg.unused_27[1] != kSwitchControlsMarker)
+    {
+        g_Supervisor.cfg.unused_27[1] = kSwitchControlsMarker;
+        g_Supervisor.cfg.controllerMapping = g_SwitchDefaultMapping;
     }
     g_ControllerMapping = g_Supervisor.cfg.controllerMapping;
 

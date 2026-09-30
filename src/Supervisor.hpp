@@ -52,6 +52,9 @@ struct ControllerMapping
 };
 static_assert(sizeof(ControllerMapping) == 0x12);
 extern ControllerMapping g_ControllerMapping;
+#ifdef __SWITCH__
+extern const ControllerMapping g_SwitchDefaultMapping;
+#endif
 
 struct GameConfiguration
 {
