@@ -23,6 +23,39 @@ static const SDL_GamepadButton g_DIToSDLButton[] = {
     SDL_GAMEPAD_BUTTON_GUIDE,
 };
 
+#ifdef __SWITCH__
+// th07-switch: the Switch buttons go through th07.cfg's own pad mapping, so
+// Option -> Key Config can rebind them. Indices (g_DIToSDLButton): 0 A, 1 B,
+// 2 X, 3 Y, 4 L/ZL, 5 R/ZR, 7 +. ZL / ZR are triggers to SDL and act as L / R.
+// Defaults (Supervisor.cpp): B shoot, A bomb, L focus, R skip, + pause.
+static bool ButtonDown(i32 index)
+{
+    SDL_Gamepad *pad = g_Supervisor.controller;
+    if (SDL_GetGamepadButton(pad, g_DIToSDLButton[index]))
+        return true;
+    if (index == 4)
+        return SDL_GetGamepadAxis(pad, SDL_GAMEPAD_AXIS_LEFT_TRIGGER) > 16000;
+    if (index == 5)
+        return SDL_GetGamepadAxis(pad, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) > 16000;
+    return false;
+}
+// Only these can be picked in Key Config; the d-pad and sticks (clicks
+// included) only move, and - / Home do nothing.
+static bool Assignable(size_t index)
+{
+    return index <= 5 || index == 7;
+}
+#else
+static bool ButtonDown(i32 index)
+{
+    return SDL_GetGamepadButton(g_Supervisor.controller, g_DIToSDLButton[index]);
+}
+static bool Assignable(size_t)
+{
+    return true;
+}
+#endif
+
 u32 Controller::SetButton(u16 *outButtons, i32 controllerButton, u32 thButton)
 {
     if (controllerButton < 0 || (size_t)controllerButton >= ARRAY_SIZE(g_DIToSDLButton))
@@ -30,7 +63,7 @@ u32 Controller::SetButton(u16 *outButtons, i32 controllerButton, u32 thButton)
         return 0;
     }
 
-    if (SDL_GetGamepadButton(g_Supervisor.controller, g_DIToSDLButton[controllerButton]))
+    if (ButtonDown(controllerButton))
     {
         *outButtons |= thButton;
         return thButton;
@@ -46,44 +79,8 @@ u16 Controller::GetControllerInput(u16 buttons)
         return buttons;
     }
 
-#ifdef __SWITCH__
-    // th07-switch: fixed layout, identical to the th06 Switch port.
-    //   A (SDL east)  = shoot/confirm    B (SDL south) = bomb/cancel
-    //   L             = focus            +             = menu/pause
-    //   R             = skip dialogue
-    // The config mapping is ignored on purpose: th07.cfg cannot express the
-    // triggers at all, and letting every face button do something (the stock
-    // PC mapping also binds skip and the TH_BUTTON_D cheat key) is exactly the
-    // "all the buttons do random things" behaviour we do not want here.
-    SDL_Gamepad *pad = g_Supervisor.controller;
-    u32 isShooting = 0;
-
-    if (SDL_GetGamepadButton(pad, SDL_GAMEPAD_BUTTON_EAST))
-    {
-        buttons |= TH_BUTTON_SHOOT;
-        isShooting = TH_BUTTON_SHOOT;
-    }
-    if (SDL_GetGamepadButton(pad, SDL_GAMEPAD_BUTTON_SOUTH))
-    {
-        buttons |= TH_BUTTON_BOMB;
-    }
-    if (SDL_GetGamepadButton(pad, SDL_GAMEPAD_BUTTON_LEFT_SHOULDER))
-    {
-        buttons |= TH_BUTTON_FOCUS;
-    }
-    if (SDL_GetGamepadButton(pad, SDL_GAMEPAD_BUTTON_START))
-    {
-        buttons |= TH_BUTTON_MENU;
-    }
-    // R is the dialogue skip (Ctrl on PC). Held, not tapped, as in the original.
-    if (SDL_GetGamepadButton(pad, SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER))
-    {
-        buttons |= TH_BUTTON_SKIP;
-    }
-#else
     u32 isShooting =
         SetButton(&buttons, g_Supervisor.cfg.controllerMapping.shootButton, TH_BUTTON_SHOOT);
-#endif
 
     // ZUN's "shot slow" auto-focus: holding shot also engages focus after ~10
     // frames. Off by default on Switch (see Supervisor::LoadConfig), but the
@@ -112,7 +109,6 @@ u16 Controller::GetControllerInput(u16 buttons)
         }
     }
 
-#ifndef __SWITCH__
     SetButton(&buttons, g_Supervisor.cfg.controllerMapping.bombButton, TH_BUTTON_BOMB);
     SetButton(&buttons, g_Supervisor.cfg.controllerMapping.focusButton, TH_BUTTON_FOCUS);
     SetButton(&buttons, g_Supervisor.cfg.controllerMapping.menuButton, TH_BUTTON_MENU);
@@ -122,6 +118,7 @@ u16 Controller::GetControllerInput(u16 buttons)
     SetButton(&buttons, g_Supervisor.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT);
     SetButton(&buttons, g_Supervisor.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP);
 
+#ifndef __SWITCH__
     SetButton(&buttons, 7, TH_BUTTON_D);
 #endif
 
@@ -182,7 +179,7 @@ u8 *Controller::GetControllerState()
 
     for (size_t i = 0; i < ARRAY_SIZE(g_DIToSDLButton); ++i)
     {
-        if (SDL_GetGamepadButton(g_Supervisor.controller, g_DIToSDLButton[i]))
+        if (Assignable(i) && ButtonDown((i32)i))
         {
             g_ControllerData[i] = 0x80;
         }

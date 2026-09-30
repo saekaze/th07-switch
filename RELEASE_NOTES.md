@@ -4,4 +4,5 @@
 
 * 📁 **One folder for all Touhou ports.** Recommended folder: `sd:/switch/touhou/touhou7/` — keep every Touhou port in one `sd:/switch/touhou/` folder instead of separate folders. The NRO's own folder is always checked first, and the old locations still work.
 * 🏷️ **The NRO is now `touhou7.nro`**, matching the other ports. Delete the old `th07.nro` when updating so hbmenu doesn't list the game twice.
-* Nothing in the game itself changed.
+* 🎮 **Remappable controls, like the other Touhou ports:** the in-game **Key Config** now works with the Switch buttons, and ZL/ZR act as L/R. The default layout is the same as every other port (B shoot, A bomb, L/ZL focus, R/ZR skip, + pause); the D-Pad and sticks only move.
+* Gameplay itself is unchanged.

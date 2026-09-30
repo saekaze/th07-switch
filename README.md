@@ -17,7 +17,8 @@ Companion to the [Touhou 6 Switch port](https://github.com/saekaze/th06-switch),
 
 * 📁 **One folder for all Touhou ports:** the game can now live in `sd:/switch/touhou/touhou7/` (recommended), next to the other ports. The NRO's own folder is always checked first, so your current setup keeps working.
 * 🏷️ **The NRO is now `touhou7.nro`**, matching the other ports (`touhou6.nro`, `touhou8.nro` …). Delete the old `th07.nro` when updating so hbmenu doesn't list the game twice.
-* Nothing in the game itself changed.
+* 🎮 **Remappable controls, like the other Touhou ports:** the in-game **Key Config** now works with the Switch buttons, and ZL/ZR act as L/R. The default layout is the same as every other port (B shoot, A bomb, L/ZL focus, R/ZR skip, + pause); the D-Pad and sticks only move.
+* Gameplay itself is unchanged.
 
 ---
 
@@ -26,7 +27,7 @@ Companion to the [Touhou 6 Switch port](https://github.com/saekaze/th06-switch),
 * 🚀 **Locked 60 FPS:** Horizon's EGL implementation does not block on swap, so the renderer would otherwise free-run at ~120 FPS while the logic ticked at 60. The port paces presentation against an absolute deadline, giving stable frames and noticeably less battery drain.
 * 🌸 **OLED-Friendly Pillarboxing:** The original 640×480 playfield is centred inside the Switch's 1280×720 display with pure black (`#000000`) bars.
 * 🔊 **Direct AUDOUT Audio:** Rather than layering the miniaudio engine on top of SDL's audio backend, the port drives libnx AUDOUT itself with four page-aligned buffers cycled in strict release order at the hardware's native 48 kHz — no resampling anywhere in the path. BGM is preloaded into RAM so SD card reads never stall playback.
-* 🎮 **Fixed, Sane Controls:** Joy-Con (handheld, grip, detached) and Pro Controller via SDL3's gamepad API.
+* 🎮 **Sane, Remappable Controls:** Joy-Con (handheld, grip, detached) and Pro Controller with the same default layout as every other Touhou Switch port (B shoot, A bomb, L/ZL focus, R/ZR skip, + pause); the in-game **Key Config** can rebind them.
 * 🌏 **Language-Aware Title:** hbmenu shows the original Japanese title on consoles set to 日本語 and the romanised one everywhere else, filled across all 16 NACP language slots.
 * 📁 **Flexible Data Location:** The game data can sit in `sd:/switch/touhou/touhou7/` (recommended), `sd:/switch/th07/`, `sd:/th07/`, `sd:/touhou7/`, `sd:/games/th07/` and more — folder names are matched case-insensitively against real directory entries, so FAT32 capitalisation quirks do not matter.
 * 💾 **Saves Next to the Data:** `th07.cfg`, `score.dat`, replays and snapshots are written into the same SD folder the game loaded from.
@@ -68,14 +69,13 @@ Run `touhou7.nro` from the **Homebrew Menu (hbmenu)**, **Sphaira launcher**, or 
 | Nintendo Switch Button | Action |
 | :--- | :--- |
 | **Left Stick / D-Pad** | Character Movement |
-| **A** | Bomb / Cancel |
 | **B** | Shoot / Confirm |
-| **L** | Focus (Precision Slow-Motion Movement) |
-| **R** | Skip Dialogue (hold) |
+| **A** | Bomb / Cancel |
+| **L / ZL** | Focus (Precision Slow-Motion Movement) |
+| **R / ZR** | Skip Dialogue (hold) |
 | **+ (Plus)** | Pause / In-Game Menu |
 
-
-Every other button is intentionally inert. The layout is fixed in code rather than read from `th07.cfg`, because the config format cannot express the triggers and its PC defaults bind a debug cheat key to **+**.
+**The same default layout in every Touhou Switch port:** B shoots, A bombs, L/ZL focuses, R/ZR skips dialogue, + pauses. These are only defaults — the Switch buttons act as the game's own gamepad, so the in-game **Key Config** can rebind them, and **Default** there brings this layout back. The D-Pad and sticks only move — they can never be picked as a button. Key Config numbers: 0 A, 1 B, 2 X, 3 Y, 4 L/ZL, 5 R/ZR, 7 +.
 
 ZUN's "shot slow" auto-focus (holding shot also engages focus) defaults to **off** here, but can be turned back on in **Option** and will be respected.
 

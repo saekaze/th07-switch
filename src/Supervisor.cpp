@@ -30,12 +30,11 @@
 #include "pbg4/Pbg4Archive.hpp"
 
 #ifdef __SWITCH__
-// th07-switch: same layout as the th06 Switch port.
-//   shoot  = SDL EAST   (physical A)      bomb = SDL SOUTH (physical B)
-//   focus  = L (LEFT_SHOULDER)            pause = + (START)
-//   skip   = R (RIGHT_SHOULDER)
-// Controller.cpp enforces this layout directly; these values only keep the
-// in-game key config screen showing something truthful.
+// th07-switch: default layout, the same as the other Touhou Switch ports.
+//   shoot  = 1: SDL EAST  = Switch B     bomb  = 0: SDL SOUTH = Switch A
+//   focus  = 4: L / ZL                   pause = 7: +
+//   skip   = 5: R / ZR
+// Controller.cpp reads th07.cfg's mapping, so Key Config can change it.
 ControllerMapping g_ControllerMapping = {1, 0, 4, 7, -1, -1, -1, -1, 5};
 #else
 ControllerMapping g_ControllerMapping = {0, 1, 2, 4, -1, -1, -1, -1, 3};
